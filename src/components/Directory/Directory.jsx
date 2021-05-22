@@ -40,13 +40,8 @@ const items = [
 ];
 
 const renderItems = () => (
-	items.map(({ title, imageUrl, id, size}) => (
-		<MenuItem 
-			key      = {id}
-			title    = {title.toUpperCase()}
-			imageUrl = {imageUrl}
-			size     = {size}
-		/>
+	items.map(({ id, ...otherItemProps }) => (
+		<MenuItem key={id} {...otherItemProps} />
 	))
 );
 
