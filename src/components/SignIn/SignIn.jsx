@@ -2,19 +2,34 @@ import React, { useState }  from 'react';
 
 import FormInput            from 'components/FormInput/FormInput';
 import CustomButton         from 'components/CustomButton/CustomButton';
-import { signInWithGoogle } from 'firebase/firebase.utils';
+import { auth, signInWithGoogle } from 'firebase/firebase.utils';
 
 import 'components/SignIn/SignIn.scss';
 
-const SignIn = () => {
-	const [email, setEmail]       = useState('');
-	const [password, setPassword] = useState('');
+const initialLoginData = {
+	email    : '',
+	password : ''
+};
 
-	const handleSubmit = (e) => { 
+const SignIn = () => {
+	const [loginData, setLoginData] = useState(initialLoginData);
+	const { email, password } = loginData;
+
+	const handleSubmit = async (e) => { 
 		e.preventDefault();
-		setEmail('');
-		setPassword('');
-	}
+		
+		try {
+			await auth.signInWithEmailAndPassword(email, password);
+			setLoginData(initialLoginData);
+		} catch(error) {
+			console.log(error);
+		}
+	};
+
+	const handleChange = ({ target }) => setLoginData({ 
+		...loginData, 
+		[target.name]: target.value
+	});
 
 	return (
 		<div className="sign-in">
@@ -26,7 +41,7 @@ const SignIn = () => {
 					name     = "email"
 					type     = "email"
 					value    = {email}
-					onChange = {e => setEmail(e.target.value)}
+					onChange = {handleChange}
 					label    = "Email"
 					required
 				/>
@@ -34,7 +49,7 @@ const SignIn = () => {
 					name     = "password"
 					type     = "password"
 					value    = {password}
-					onChange = {e => setPassword(e.target.value)}
+					onChange = {handleChange}
 					label    = "Password"
 					required
 				/>
