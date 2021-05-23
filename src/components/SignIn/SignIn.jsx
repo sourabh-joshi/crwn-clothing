@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState }  from 'react';
 
-import FormInput           from 'components/FormInput/FormInput';
-import CustomButton        from 'components/CustomButton/CustomButton';
+import FormInput            from 'components/FormInput/FormInput';
+import CustomButton         from 'components/CustomButton/CustomButton';
+import { signInWithGoogle } from 'firebase/firebase.utils';
 
 import 'components/SignIn/SignIn.scss';
 
@@ -26,7 +27,7 @@ const SignIn = () => {
 					type     = "email"
 					value    = {email}
 					onChange = {e => setEmail(e.target.value)}
-					label = "Email"
+					label    = "Email"
 					required
 				/>
 				<FormInput 
@@ -34,11 +35,13 @@ const SignIn = () => {
 					type     = "password"
 					value    = {password}
 					onChange = {e => setPassword(e.target.value)}
-					label="Password"
+					label    = "Password"
 					required
 				/>
-
-				<CustomButton type="submit">Sign In</CustomButton>
+				<div className="buttons">
+					<CustomButton type="submit">Sign In</CustomButton>
+					<CustomButton type="button" onClick={signInWithGoogle} isGoogleSignIn>Sign in with Google</CustomButton> 
+				</div>
 			</form>
 		</div>
 	);
