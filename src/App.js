@@ -1,23 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { Switch, Route }              from 'react-router-dom';
+import React, { useState, useEffect }      from 'react';
+import { Switch, Route }                   from 'react-router-dom';
 
-import { auth }                       from 'firebase/firebase.utils';
-import Header                         from 'components/Header/Header';
-import HomePage                       from 'pages/HomePage/HomePage';
-import ShopPage                       from 'pages/Shop/Shop';
-import UserLoginSignupPage            from 'pages/UserLoginSignup/UserLoginSignup';
+import { auth, createUserProfileDocument } from 'firebase/firebase.utils';
+import Header                              from 'components/Header/Header';
+import HomePage                            from 'pages/HomePage/HomePage';
+import ShopPage                            from 'pages/Shop/Shop';
+import UserLoginSignupPage                 from 'pages/UserLoginSignup/UserLoginSignup';
 
 import 'App.css';
 
 const App = () => {
 	const [currentUser, setCurrentUser] = useState(null);
 	useEffect(() => {
-		return auth.onAuthStateChanged(user => {
-			setCurrentUser(user);
-			console.log(user);
+		return auth.onAuthStateChanged(async user => {
+			if(user) {
+				const userRef = await createUserProfileDocument(user);
+
+				userRef.onSnapshot(snapshot => {
+					setCurrentUser({
+						id: snapshot.id,
+						...snapshot.data()
+					});
+				});
+			} else {
+				setCurrentUser(null);
+			}
 		});
 	}, []);
-
 	return	(
 		<div>
 			<Header currentUser={currentUser} />
