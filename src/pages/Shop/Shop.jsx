@@ -1,11 +1,11 @@
-import React                     from 'react';
+import React             from 'react';
 
-import { SHOP_DATA as shopData } from 'pages/Shop/shopData';
-import CollectionPreview         from 'components/CollectionPreview/CollectionPreview';
+import SHOP_DATA         from 'pages/Shop/shopData';
+import CollectionPreview from 'components/CollectionPreview/CollectionPreview';
 
 const renderShopData = () => (
-	shopData.map(({ id, ...otherData}) => 
-		<CollectionPreview id={id} {...otherData} />
+	SHOP_DATA.map(({ id, ...otherData}) => 
+		<CollectionPreview key={id} {...otherData} />
 	)
 );
 
