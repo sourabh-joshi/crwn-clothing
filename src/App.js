@@ -1,18 +1,20 @@
-import React, { useEffect }                from 'react';
-import { Switch, Route, Redirect }         from 'react-router-dom';
-import { connect }                         from 'react-redux';
-import { createStructuredSelector }        from 'reselect';
+import React, { useEffect, lazy, Suspense } from 'react';
+import { Switch, Route, Redirect }          from 'react-router-dom';
+import { connect }                          from 'react-redux';
+import { createStructuredSelector }         from 'reselect';
 
-import { auth, createUserProfileDocument } from 'firebase/firebase.utils';
-import Header                              from 'components/Header/Header';
-import HomePage                            from 'pages/HomePage/HomePage';
-import ShopPage                            from 'pages/Shop/Shop';
-import UserLoginSignupPage                 from 'pages/UserLoginSignup/UserLoginSignup';
-import CheckoutPage                        from 'pages/Checkout/Checkout';
-import { setCurrentUser }                  from 'redux/user/userActions';
-import { selectCurrentUser }               from 'redux/user/userSelector';
+import { auth, createUserProfileDocument }  from 'firebase/firebase.utils';
+import Header                               from 'components/Header/Header';
+import { setCurrentUser }                   from 'redux/user/userActions';
+import { selectCurrentUser }                from 'redux/user/userSelector';
+import HomePage                             from 'pages/HomePage/HomePage';
+import Spinner                              from 'components/Spinner/Spinner';
 
 import 'App.css';
+
+const ShopPage            = lazy(() => import('pages/Shop/Shop'));
+const UserLoginSignupPage = lazy(() => import('pages/UserLoginSignup/UserLoginSignup'));
+const CheckoutPage        = lazy(() => import('pages/Checkout/Checkout'));
 
 const renderSigninPath = (currentUser) => { 
 	return currentUser ? <Redirect to='/' /> : <UserLoginSignupPage />;
@@ -34,15 +36,17 @@ const App = ({ currentUser, setCurrentUser }) => {
 				setCurrentUser(null);
 			}
 		});
-	}, []);
+	}, [setCurrentUser]);
 	return	(
 		<div>
 			<Header />
 			<Switch>
-				<Route exact path="/" component={HomePage} />
-				<Route path="/shop" component={ShopPage} />
-				<Route exact path="/signin" render={() => renderSigninPath(currentUser)}/>
-				<Route exact path="/checkout" component={CheckoutPage}/>
+				<Suspense fallback={<Spinner />}>
+					<Route exact path="/" component={HomePage} />
+					<Route path="/shop" component={ShopPage} />
+					<Route exact path="/signin" render={() => renderSigninPath(currentUser)}/>
+					<Route exact path="/checkout" component={CheckoutPage}/>
+				</Suspense>
 			</Switch>
 		</div>
 	);

@@ -1,10 +1,11 @@
-import React, { useEffect }           from 'react';
-import { Route }                      from 'react-router-dom';
-import { connect }                    from 'react-redux';
+import React, { useEffect, lazy, Suspense } from 'react';
+import { Route }                            from 'react-router-dom';
+import { connect }                          from 'react-redux';
 
-import CollectionsOverviewContainer   from 'components/CollectionsOverview/CollectionsOverviewContainer';
-import CollectionPageContainer        from 'pages/Collection/CollectionContainer';
-import { fetchCollectionsStartAsync } from 'redux/shop/shopActions';
+import { fetchCollectionsStartAsync }       from 'redux/shop/shopActions';
+
+const CollectionsOverviewContainer = lazy(() => import('components/CollectionsOverview/CollectionsOverviewContainer'));
+const CollectionPageContainer      = lazy(() => import('pages/Collection/CollectionContainer'));
 
 const Shop = ({ match, fetchCollectionsStartAsync }) => {
 	useEffect(() => {
@@ -13,14 +14,16 @@ const Shop = ({ match, fetchCollectionsStartAsync }) => {
 
 	return (
 		<div>
-			<Route 
-				exact 
-				path      = {`${match.path}`}
-				component = {CollectionsOverviewContainer}
-			/>
-			<Route 
-				path      = {`${match.path}/:collectionId`}
-				component = {CollectionPageContainer} />
+			<Suspense>
+				<Route 
+					exact 
+					path      = {`${match.path}`}
+					component = {CollectionsOverviewContainer}
+				/>
+				<Route 
+					path      = {`${match.path}/:collectionId`}
+					component = {CollectionPageContainer} />
+			</Suspense>
 		</div>
 	);
 };
