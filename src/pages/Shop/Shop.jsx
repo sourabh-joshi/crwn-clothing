@@ -10,7 +10,7 @@ const CollectionPageContainer      = lazy(() => import('pages/Collection/Collect
 const Shop = ({ match, fetchCollectionsStartAsync }) => {
 	useEffect(() => {
 		fetchCollectionsStartAsync();
-	}, []);
+	}, [fetchCollectionsStartAsync]);
 
 	return (
 		<div>

@@ -9,6 +9,7 @@ import { setCurrentUser }                   from 'redux/user/userActions';
 import { selectCurrentUser }                from 'redux/user/userSelector';
 import HomePage                             from 'pages/HomePage/HomePage';
 import Spinner                              from 'components/Spinner/Spinner';
+import ErrorBoundary                        from 'components/ErrorBoundary/ErrorBoundary';
 
 import 'App.css';
 
@@ -41,12 +42,14 @@ const App = ({ currentUser, setCurrentUser }) => {
 		<div>
 			<Header />
 			<Switch>
-				<Suspense fallback={<Spinner />}>
-					<Route exact path="/" component={HomePage} />
-					<Route path="/shop" component={ShopPage} />
-					<Route exact path="/signin" render={() => renderSigninPath(currentUser)}/>
-					<Route exact path="/checkout" component={CheckoutPage}/>
-				</Suspense>
+				<ErrorBoundary>
+					<Suspense fallback={<Spinner />}>
+						<Route exact path="/" component={HomePage} />
+						<Route path="/shop" component={ShopPage} />
+						<Route exact path="/signin" render={() => renderSigninPath(currentUser)}/>
+						<Route exact path="/checkout" component={CheckoutPage}/>
+					</Suspense>
+				</ErrorBoundary>
 			</Switch>
 		</div>
 	);
